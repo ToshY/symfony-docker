@@ -1,0 +1,86 @@
+version: '3'
+
+includes:
+  app: ./.tasks/app
+  db: ./.tasks/database
+  docker: ./.tasks/docker
+  npm: ./.tasks/npm
+
+env:
+  UID:
+    sh: id -u
+  GID:
+    sh: id -g
+  TTY: ''
+
+tasks:
+  default:
+    cmds:
+      - task --list
+
+  up:
+    desc: Initial setup application
+    cmds:
+      - task: docker:up
+      - task: docker:wait
+      - task: app:install:dev
+      - task: app:migration:run
+
+  # Contribute
+  contribute:
+    desc: Contribute by running dev tools
+    cmds:
+      - task: phpcs
+      - task: phpstan
+      - task: phpmd
+      - task: phpunit
+
+  grum:init:
+    desc: Init GrumPHP
+    cmds:
+      - docker compose run --rm $TTY phpfpm vendor/bin/grumphp git:init
+
+  phpcs:
+    desc: PHPCS dry run
+    cmds:
+      - docker compose run --rm $TTY phpfpm vendor/bin/php-cs-fixer fix --dry-run -v --diff
+
+  phpcs:fix:
+    desc: PHPCS fix
+    cmds:
+      - docker compose run --rm $TTY phpfpm vendor/bin/php-cs-fixer fix -v
+
+  phpmd:
+    desc: PHPMD run
+    cmds:
+      - docker compose run --rm $TTY phpfpm vendor/bin/phpmd src/ text phpmd.xml
+
+  phpmd:strict:
+    desc: PHPMD run with strict argument
+    cmds:
+      - docker compose run --rm $TTY phpfpm vendor/bin/phpmd --strict src/ text phpmd.xml
+
+  phpmd:baseline:
+    desc: PHPMD update baseline
+    cmds:
+      - docker compose run --rm $TTY phpfpm vendor/bin/phpmd --generate-baseline src/ text phpmd.xml
+
+  phpstan:
+    desc: PHPStan run
+    cmds:
+      - docker compose run --rm $TTY phpfpm vendor/bin/phpstan analyse --error-format=table
+
+  phpstan:baseline:
+    desc: PHPStan update baseline
+    cmds:
+      - docker compose run --rm $TTY phpfpm vendor/bin/phpstan --generate-baseline
+
+  phpunit:
+    desc: PHPUnit run
+    cmds:
+      - docker compose run --rm $TTY phpfpm vendor/bin/phpunit
+
+  phpunit:config:
+    desc: PHPUnit generate config
+    cmds:
+      - docker compose run --rm $TTY phpfpm vendor/bin/phpunit --generate-configuration

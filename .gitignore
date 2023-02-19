@@ -1,0 +1,26 @@
+/.idea
+/.task
+/.php-version
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+/public/build/
+/var/
+/vendor/
+/node_modules/
+###< symfony/framework-bundle ###
+###> mysql ###
+/**/*.sql
+/**/*.sql.gz
+###< mysql ###
+###> docker ###
+/docker-compose.override.yml
+###< docker ###
+###> friendsofphp/php-cs-fixer ###
+/.php-cs-fixer.php
+/.php-cs-fixer.cache
+###< friendsofphp/php-cs-fixer ###
+!/**/.gitkeep

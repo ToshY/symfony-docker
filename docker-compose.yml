@@ -1,0 +1,99 @@
+version: '3.9'
+
+x-restart-always: &restart-always
+  restart: always
+  
+services:
+  phpfpm:
+    extends:
+      file: common-services.yml
+      service: php-base
+    restart: always
+
+  # Node; do not upgrade to 17.x until SO 69394632 seems fixed for Encore.; user doesn't work in CI
+  node:
+    extends:
+      file: common-services.yml
+      service: asset-base
+    image: node:${NODE_IMAGE_VERSION}
+    #user: node
+    depends_on:
+      - phpfpm
+
+  apache:
+    build:
+      context: .docker/apache
+      dockerfile: Dockerfile
+      args:
+        APACHE_IMAGE_VERSION: ${APACHE_IMAGE_VERSION}
+        VHOST_CONF: app
+    security_opt:
+      - no-new-privileges:true
+    <<: *restart-always
+    volumes:
+      - apache_log:/var/log/apache2
+      - .:/app
+    labels:
+      traefik.enable: true
+      traefik.docker.network: proxy
+      traefik.http.routers.webapp-apache.priority: 100
+      traefik.http.routers.webapp-apache.tls: true
+      traefik.http.routers.webapp-apache.entrypoints: websecure
+      traefik.http.routers.webapp-apache.rule: Host(`${APP_DOMAIN}`)
+      traefik.http.routers.webapp-apache.service: webapp-apache
+      traefik.http.services.webapp-apache.loadbalancer.server.port: 80
+    networks:
+      - webapp
+      - proxy
+
+  mysql:
+    build:
+      context: .docker/mysql
+      dockerfile: Dockerfile
+      args:
+        MYSQL_IMAGE_VERSION: ${MYSQL_IMAGE_VERSION}
+    cap_add:
+      - SYS_NICE
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      options:
+        max-size: "50m"
+        max-file: "5"
+    ports:
+      - "3307:3306"
+    <<: *restart-always
+    environment:
+      MYSQL_USER: ${DATABASE_USER}
+      MYSQL_DATABASE: ${DATABASE_NAME}
+      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - mysql_log:/var/log/mysql
+      - ~/db-init/mysql/webapp:/docker-entrypoint-initdb.d
+    networks:
+      - webapp
+
+  wait:
+    image: waisbrot/wait
+    environment:
+      TARGETS: mysql:3306 apache:80
+      TIMEOUT: 300
+    networks:
+      - webapp
+      - proxy
+
+volumes:
+  mysql_data:
+    driver: local
+  mysql_log:
+    driver: local
+  apache_log:
+    driver: local
+
+networks:
+  webapp:
+    driver: bridge
+  proxy:
+    external: true

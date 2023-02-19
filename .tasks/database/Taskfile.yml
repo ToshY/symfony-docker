@@ -1,0 +1,72 @@
+version: '3'
+
+tasks:
+  login:
+    desc: Login
+    cmds:
+      - docker compose exec $TTY mysql /bin/sh
+
+  cli:
+    desc: Login with CLI
+    vars:
+      USER: '{{.u | default "root"}}'
+      PASSWORD: '{{.p | default "password"}}'
+    cmds:
+      - docker compose exec $TTY mysql mysql -u {{.USER}} -p{{.PASSWORD}}
+
+  drop:
+    desc: Drop database
+    vars:
+      USER: '{{.u | default "root"}}'
+      PASSWORD: '{{.p | default "password"}}'
+      DATABASE: '{{.d | default "webapp_db"}}'
+    cmds:
+      - docker compose exec $TTY mysql mysql -u {{.USER}} -p{{.PASSWORD}} -e "DROP SCHEMA \`{{.DATABASE}}\`;"
+
+  create:
+    desc: Create database
+    vars:
+      USER: '{{.u | default "root"}}'
+      PASSWORD: '{{.p | default "password"}}'
+      DATABASE: '{{.d | default "webapp_db"}}'
+    cmds:
+      - docker compose exec $TTY mysql mysql -u {{.USER}} -p{{.PASSWORD}} -e "CREATE SCHEMA \`{{.DATABASE}}\`;"
+
+  drop-create:
+    desc: Drop and create database
+    vars:
+      USER: '{{.u | default "root"}}'
+      PASSWORD: '{{.p | default "password"}}'
+      DATABASE: '{{.d| default "webapp_db"}}'
+    cmds:
+      - task db:drop u={{.USER}} p={{.PASSWORD}} d={{.DATABASE}}
+      - task db:create u={{.USER}} p={{.PASSWORD}} d={{.DATABASE}}
+
+  import:
+    desc: Import database from file
+    vars:
+      USER: '{{.u | default "root"}}'
+      PASSWORD: '{{.p | default "password"}}'
+      DATABASE: '{{.d| default "webapp_db"}}'
+      FILE: '{{.f}}'
+    cmds:
+      - docker compose exec -T mysql mysql -u {{.USER}} -p{{.PASSWORD}} {{.DATABASE}} < {{.FILE}}
+
+  reset:
+    desc: Drop, create and import database from given file
+    vars:
+      USER: '{{.u | default "root"}}'
+      PASSWORD: '{{.p | default "password"}}'
+      DATABASE: '{{.d | default "webapp_db"}}'
+      FILE: '{{.f}}'
+    cmds:
+      - task db:drop-create u={{.USER}} p={{.PASSWORD}} d={{.DATABASE}}
+      - task db:import u={{.USER}} p={{.PASSWORD}} d={{.DATABASE}} f="{{.FILE}}"
+
+  unzip:
+    desc: Unzip database from given file
+    vars:
+      FILE: '{{.f}}'
+    cmds:
+      - |
+        gunzip -c {{.FILE}} | tar xvf -

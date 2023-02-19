@@ -1,0 +1,91 @@
+version: '3'
+
+tasks:
+  up:
+    desc: Up services
+    cmds:
+      - docker compose up {{.CLI_ARGS}} -d --build --remove-orphans
+      - |
+        if [ -z "{{.CLI_ARGS}}" ]; then
+          task docker:wait
+        fi
+
+  down:
+    desc: Down services
+    cmds:
+      - docker compose down --remove-orphans {{.CLI_ARGS}}
+
+  wait:
+    desc: Wait for services to be up
+    silent: true
+    cmds:
+      - |
+        if [ ! -z "{{.CLI_ARGS}}" ]; then 
+          docker compose run $TTY -e TARGETS="{{.CLI_ARGS}}" --rm wait; 
+        else 
+          docker compose run $TTY --rm wait; 
+        fi
+
+  pull:
+    desc: Pull latest images
+    cmds:
+      - docker compose pull
+
+  start:
+    desc: Start services
+    cmds:
+      - docker compose start {{.CLI_ARGS}}
+
+  stop:
+    desc: Stop services
+    cmds:
+      - docker compose stop {{.CLI_ARGS}}
+
+  recreate:
+    desc: Force recreate
+    cmds:
+      - docker compose up {{.CLI_ARGS}} -d --build --force-recreate
+
+  remove:
+    desc: Removes stopped service containers
+    cmds:
+      - docker compose rm -svf {{.CLI_ARGS}}
+
+  logs:
+    desc: Show logs
+    cmds:
+      - docker compose logs -ft {{.CLI_ARGS}}
+
+  network:create:
+    desc: Create network
+    cmds:
+      - docker network inspect {{.CLI_ARGS}} >/dev/null 2>&1 || docker network create {{.CLI_ARGS}}
+
+  volume:create:
+    deps:
+      - docker volume inspect {{.CLI_ARGS}} >/dev/null 2>&1 || docker volume create {{.CLI_ARGS}}
+
+  prune:system:
+    desc: Remove all unused containers, networks, images (both dangling and unreferenced), and optionally, volumes.
+    cmds:
+      - docker image prune {{.CLI_ARGS}}
+
+  prune:image:
+    desc: Remove all dangling images. If -a is specified, will also remove all images not referenced by any container.
+    cmds:
+      - docker image prune {{.CLI_ARGS}}
+
+  prune:network:
+    desc: Remove all unused networks. Unused networks are those which are not referenced by any containers.
+    cmds:
+      - docker network prune {{.CLI_ARGS}}
+
+  prune:volume:
+    desc: Remove all unused local volumes. Unused local volumes are those which are not referenced by any containers
+    cmds:
+      - docker volume prune {{.CLI_ARGS}}
+
+  prune:cache:
+    desc: Remove build cache
+    cmds:
+      - docker builder prune {{.CLI_ARGS}}

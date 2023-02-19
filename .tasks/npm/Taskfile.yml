@@ -1,0 +1,42 @@
+version: '3'
+
+tasks:
+  install:
+    desc: Install (with package)
+    cmds:
+      - docker compose run --rm node npm install {{.CLI_ARGS}}
+
+  update:
+    desc: Update all or specific package
+    cmds:
+      - docker compose run --rm node npm update {{.CLI_ARGS}}
+
+  remove:
+    desc: Remove package
+    cmds:
+      - docker compose run --rm node npm uninstall {{.CLI_ARGS}}
+
+  audit:
+    desc: Audit
+    cmds:
+      - docker compose run --rm node npm audit
+
+  audit:fix:
+    desc: Audit fix
+    cmds:
+      - docker compose run --rm node npm audit fix {{.CLI_ARGS}}
+
+  run:dev:
+    desc: Encore dev
+    cmds:
+      - docker compose run --rm node npm run dev
+
+  run:watch:
+    desc: Encore dev with watch
+    cmds:
+      - docker compose run --rm node npm run watch
+
+  run:prod:
+    desc: Encore prod
+    cmds:
+      - docker compose run --rm node npm run build
