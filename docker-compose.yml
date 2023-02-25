@@ -20,18 +20,16 @@ services:
     depends_on:
       - phpfpm
 
-  apache:
+  nginx:
     build:
-      context: .docker/apache
+      context: .docker/nginx
       dockerfile: Dockerfile
       args:
-        APACHE_IMAGE_VERSION: ${APACHE_IMAGE_VERSION}
-        VHOST_CONF: app
+        NGINX_IMAGE_VERSION: ${NGINX_IMAGE_VERSION}
     security_opt:
       - no-new-privileges:true
     <<: *restart-always
     volumes:
-      - apache_log:/var/log/apache2
       - .:/app
     labels:
       traefik.enable: true
