@@ -8,7 +8,7 @@ on:
       - main
 
 jobs:
-  phpcs:
+  phpunit:
     name: PHPUnit
     runs-on: ubuntu-latest
     strategy:
