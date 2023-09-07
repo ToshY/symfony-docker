@@ -34,12 +34,12 @@ services:
     labels:
       traefik.enable: true
       traefik.docker.network: proxy
-      traefik.http.routers.webapp-apache.priority: 100
-      traefik.http.routers.webapp-apache.tls: true
-      traefik.http.routers.webapp-apache.entrypoints: websecure
-      traefik.http.routers.webapp-apache.rule: Host(`${APP_DOMAIN}`)
-      traefik.http.routers.webapp-apache.service: webapp-apache
-      traefik.http.services.webapp-apache.loadbalancer.server.port: 80
+      traefik.http.routers.webapp-nginx.priority: 100
+      traefik.http.routers.webapp-nginx.tls: true
+      traefik.http.routers.webapp-nginx.entrypoints: websecure
+      traefik.http.routers.webapp-nginx.rule: Host(`${APP_DOMAIN}`)
+      traefik.http.routers.webapp-nginx.service: webapp-nginx
+      traefik.http.services.webapp-nginx.loadbalancer.server.port: 80
     networks:
       - webapp
       - proxy
@@ -76,7 +76,7 @@ services:
   wait:
     image: waisbrot/wait
     environment:
-      TARGETS: mysql:3306 apache:80
+      TARGETS: mysql:3306 nginx:80
       TIMEOUT: 300
     networks:
       - webapp
