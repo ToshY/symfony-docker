@@ -23,7 +23,6 @@ tasks:
     desc: Initial setup application
     cmds:
       - task: docker:up
-      - task: docker:wait
       - task: app:install:dev
       - task: app:migration:run
 

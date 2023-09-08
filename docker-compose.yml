@@ -2,24 +2,35 @@ version: '3.9'
 
 x-restart-always: &restart-always
   restart: always
-  
+
 services:
   phpfpm:
-    extends:
-      file: common-services.yml
-      service: php-base
-    restart: always
-
-  # Node; do not upgrade to 17.x until SO 69394632 seems fixed for Encore.; user doesn't work in CI
-  node:
-    extends:
-      file: common-services.yml
-      service: asset-base
-    image: node:${NODE_IMAGE_VERSION}
-    #user: node
-    depends_on:
-      - phpfpm
-
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: local
+      args:
+        UID: ${UID:-10000}
+        GID: ${GID:-10001}
+    user: "${UID:-10000}:${GID:-10001}"
+    <<: [*restart-always]
+    environment:
+      PHP_OPCACHE_ENABLE: ${OPCACHE_ENABLE}
+      OPCACHE_ENABLE_CLI: ${OPCACHE_ENABLE_CLI}
+      OPCACHE_ENABLE_FREQ: ${OPCACHE_ENABLE_FREQ}
+      OPCACHE_VALIDATE_TIMESTAMPS: ${OPCACHE_VALIDATE_TIMESTAMPS}
+      OPCACHE_MAX_ACCELERATED_FILES: ${OPCACHE_MAX_ACCELERATED_FILES}
+      OPCACHE_MEMORY_CONSUMPTION: ${OPCACHE_MEMORY_CONSUMPTION}
+      OPCACHE_MAX_WASTED_PERCENTAGE: ${OPCACHE_MAX_WASTED_PERCENTAGE}
+      OPCACHE_INTERNED_STRINGS_BUFFER: ${OPCACHE_INTERNED_STRINGS_BUFFER}
+      OPCACHE_FAST_SHUTDOWN: ${OPCACHE_FAST_SHUTDOWN}
+      OPCACHE_PRELOAD: ${OPCACHE_PRELOAD}
+    volumes:
+      - .:/app
+    networks:
+      - webapp
+---
+services:
   nginx:
     build:
       context: .docker/nginx
@@ -28,7 +39,7 @@ services:
         NGINX_IMAGE_VERSION: ${NGINX_IMAGE_VERSION}
     security_opt:
       - no-new-privileges:true
-    <<: *restart-always
+    <<: [*restart-always]
     volumes:
       - .:/app
     labels:
@@ -60,7 +71,7 @@ services:
         max-file: "5"
     ports:
       - "3307:3306"
-    <<: *restart-always
+    <<: [*restart-always]
     environment:
       MYSQL_USER: ${DATABASE_USER}
       MYSQL_DATABASE: ${DATABASE_NAME}
@@ -73,6 +84,19 @@ services:
     networks:
       - webapp
 
+  node:
+    image: timbru31/node-alpine-git:${NODE_IMAGE_VERSION}
+    working_dir: /app
+    security_opt:
+      - no-new-privileges:true
+    profiles:
+      - dev
+    restart: "no"
+    volumes:
+      - .:/app
+    depends_on:
+      - phpfpm
+
   wait:
     image: waisbrot/wait
     environment:
@@ -80,7 +104,6 @@ services:
       TIMEOUT: 300
     networks:
       - webapp
-      - proxy
 
 volumes:
   mysql_data:
