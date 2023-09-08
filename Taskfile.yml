@@ -31,6 +31,7 @@ tasks:
     desc: Contribute by running dev tools
     cmds:
       - task: phpcs
+      - task: twigcs
       - task: phpstan
       - task: phpmd
       - task: phpunit
