@@ -83,8 +83,8 @@
         }
     },
     "require-dev": {
-        "phpmd/phpmd": "^2.13",
         "friendsofphp/php-cs-fixer": "^3.13",
+        "phpmd/phpmd": "^2.13",
         "phpro/grumphp": "^1.15",
         "phpstan/phpstan": "^1.9",
         "phpunit/phpunit": "^9.6",
@@ -94,6 +94,7 @@
         "symfony/maker-bundle": "^1.0",
         "symfony/phpunit-bridge": "^6.2",
         "symfony/stopwatch": "6.2.*",
-        "symfony/web-profiler-bundle": "6.2.*"
+        "symfony/web-profiler-bundle": "6.2.*",
+        "vincentlanglet/twig-cs-fixer": "^1.3"
     }
 }

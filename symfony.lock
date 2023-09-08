@@ -47,6 +47,15 @@
             ".php-cs-fixer.dist.php"
         ]
     },
+    "phpstan/phpstan": {
+        "version": "1.9",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "1.0",
+            "ref": "d74d4d719d5f53856c9c13544aa22d44144b1819"
+        }
+    },
     "phpunit/phpunit": {
         "version": "9.6",
         "recipe": {
@@ -290,5 +299,14 @@
     },
     "twig/extra-bundle": {
         "version": "v3.5.1"
+    },
+    "vincentlanglet/twig-cs-fixer": {
+        "version": "1.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "0.6",
+            "ref": "e4da12a48e8138479bd24a675321bcfd84950266"
+        }
     }
 }

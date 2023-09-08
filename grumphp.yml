@@ -11,3 +11,7 @@ grumphp:
       ruleset:
         - 'phpmd.xml'
     phpunit:
+    shell:
+      scripts:
+        - ["-c", "vendor/bin/twig-cs-fixer lint templates/"]
+      triggered_by: [twig]

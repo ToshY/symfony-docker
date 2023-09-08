@@ -39,49 +39,59 @@ tasks:
   grum:init:
     desc: Init GrumPHP
     cmds:
-      - docker compose run --rm $TTY phpfpm vendor/bin/grumphp git:init
+      - docker compose run --rm --no-deps $TTY phpfpm vendor/bin/grumphp git:init
 
   phpcs:
     desc: PHPCS dry run
     cmds:
-      - docker compose run --rm $TTY phpfpm vendor/bin/php-cs-fixer fix --dry-run -v --diff
+      - docker compose run --rm --no-deps$TTY phpfpm vendor/bin/php-cs-fixer fix --dry-run -v --diff
 
   phpcs:fix:
     desc: PHPCS fix
     cmds:
-      - docker compose run --rm $TTY phpfpm vendor/bin/php-cs-fixer fix -v
+      - docker compose run --rm --no-deps $TTY phpfpm vendor/bin/php-cs-fixer fix -v
+
+  twigcs:
+    desc: TwigCS lint
+    cmds:
+      - docker compose run --rm --no-deps $TTY phpfpm vendor/bin/twig-cs-fixer lint templates/
+
+  twigcs:fix:
+    desc: TwigCS fix
+    cmds:
+      - docker compose run --rm --no-deps $TTY phpfpm vendor/bin/twig-cs-fixer lint --fix templates/
 
   phpmd:
     desc: PHPMD run
     cmds:
-      - docker compose run --rm $TTY phpfpm vendor/bin/phpmd src/ text phpmd.xml
+      - docker compose run --rm --no-deps $TTY phpfpm vendor/bin/phpmd src/ text phpmd.xml
 
   phpmd:strict:
     desc: PHPMD run with strict argument
     cmds:
-      - docker compose run --rm $TTY phpfpm vendor/bin/phpmd --strict src/ text phpmd.xml
+      - docker compose run --rm --no-deps $TTY phpfpm vendor/bin/phpmd --strict src/ text phpmd.xml
 
   phpmd:baseline:
     desc: PHPMD update baseline
     cmds:
-      - docker compose run --rm $TTY phpfpm vendor/bin/phpmd --generate-baseline src/ text phpmd.xml
+      - docker compose run --rm --no-deps $TTY phpfpm vendor/bin/phpmd --generate-baseline src/ text phpmd.xml
 
   phpstan:
     desc: PHPStan run
     cmds:
-      - docker compose run --rm $TTY phpfpm vendor/bin/phpstan analyse --error-format=table
+      - docker compose run --rm --no-deps $TTY phpfpm vendor/bin/phpstan analyse --error-format=table
 
   phpstan:baseline:
     desc: PHPStan update baseline
     cmds:
-      - docker compose run --rm $TTY phpfpm vendor/bin/phpstan --generate-baseline
+      - docker compose run --rm --no-deps $TTY phpfpm vendor/bin/phpstan --generate-baseline
 
   phpunit:
     desc: PHPUnit run
     cmds:
-      - docker compose run --rm $TTY phpfpm vendor/bin/phpunit
+      - docker compose run --rm --no-deps $TTY phpfpm vendor/bin/phpunit
 
   phpunit:config:
     desc: PHPUnit generate config
     cmds:
-      - docker compose run --rm $TTY phpfpm vendor/bin/phpunit --generate-configuration
+      - docker compose run --rm --no-deps $TTY phpfpm vendor/bin/phpunit --generate-configuration
