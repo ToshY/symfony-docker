@@ -1,8 +1,8 @@
 version: '3'
 
 tasks:
-  login:
-    desc: Login
+  shell:
+    desc: Container shell
     cmds:
       - docker compose exec $TTY mysql /bin/sh
 
@@ -37,7 +37,7 @@ tasks:
     vars:
       USER: '{{.u | default "root"}}'
       PASSWORD: '{{.p | default "password"}}'
-      DATABASE: '{{.d| default "webapp_db"}}'
+      DATABASE: '{{.d | default "webapp_db"}}'
     cmds:
       - task db:drop u={{.USER}} p={{.PASSWORD}} d={{.DATABASE}}
       - task db:create u={{.USER}} p={{.PASSWORD}} d={{.DATABASE}}
@@ -47,7 +47,7 @@ tasks:
     vars:
       USER: '{{.u | default "root"}}'
       PASSWORD: '{{.p | default "password"}}'
-      DATABASE: '{{.d| default "webapp_db"}}'
+      DATABASE: '{{.d | default "webapp_db"}}'
       FILE: '{{.f}}'
     cmds:
       - docker compose exec -T mysql mysql -u {{.USER}} -p{{.PASSWORD}} {{.DATABASE}} < {{.FILE}}

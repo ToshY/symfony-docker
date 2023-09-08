@@ -2,6 +2,7 @@ version: '3'
 
 includes:
   app: ./.tasks/app
+  composer: ./.tasks/composer
   db: ./.tasks/database
   docker: ./.tasks/docker
   npm: ./.tasks/npm

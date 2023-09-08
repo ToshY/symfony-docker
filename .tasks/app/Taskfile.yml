@@ -1,8 +1,8 @@
 version: '3'
 
 tasks:
-  cli:
-    desc: Login
+  shell:
+    desc: Container shell
     cmds:
       - docker compose exec $TTY phpfpm {{.CLI_ARGS | default "/bin/bash"}}
 
@@ -14,14 +14,14 @@ tasks:
   install:dev:
     desc: Install packages, assets and NPM dependencies
     cmds:
-      - task app:composer:install:dev
+      - task composer:install:dev
       - task app:cache:clear
       - task app:install:assets
 
   install:prod:
     desc: Install packages, assets and NPM dependencies
     cmds:
-      - task app:composer:install:prod
+      - task composer:install:prod
       - task app:cache:clear
       - task app:install:assets
 
@@ -50,42 +50,6 @@ tasks:
       - |
         sudo chmod -R {{.PERMISSIONS}} ./var
         sudo chown -R $UID:$GID ./var
-
-  composer:install:dev:
-    desc: Composer install dev
-    cmds:
-      - docker compose exec $TTY phpfpm composer install {{.CLI_ARGS | default "--no-cache --no-interaction --prefer-dist"}}
-
-  composer:install:prod:
-    desc: Composer install prod
-    cmds:
-      - docker compose exec $TTY phpfpm composer install --no-cache --no-interaction --prefer-dist --no-progress --prefer-dist --no-dev --optimize-autoloader
-
-  composer:autoload:
-    desc: Composer dump autoload
-    cmds:
-      - docker compose exec $TTY phpfpm composer dump-autoload {{.CLI_ARGS | default "--no-cache --no-interaction"}}
-
-  composer:require:
-    desc: Composer require package
-    vars:
-      PACKAGE: '{{.p}}'
-    cmds:
-      - docker compose exec $TTY phpfpm composer require {{.PACKAGE}} {{.CLI_ARGS | default "--no-cache"}}
-
-  composer:remove:
-    desc: Composer remove package
-    vars:
-      PACKAGE: '{{.p}}'
-    cmds:
-      - docker compose exec $TTY phpfpm composer remove {{.PACKAGE}} {{.CLI_ARGS | default "--no-cache"}}
-
-  composer:update:
-    desc: Composer update package
-    vars:
-      PACKAGE: '{{.p}}'
-    cmds:
-      - docker compose exec $TTY phpfpm composer update {{.PACKAGE}} {{.CLI_ARGS | default "--no-cache"}}
 
   migration:create:
     desc: Create new migration file in `./migrations`

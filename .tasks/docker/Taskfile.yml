@@ -4,7 +4,7 @@ tasks:
   up:
     desc: Up services
     cmds:
-      - docker compose up {{.CLI_ARGS}} -d --build --remove-orphans
+      - docker compose up {{.CLI_ARGS}} -d --build --remove-orphans --pull always
       - |
         if [ -z "{{.CLI_ARGS}}" ]; then
           task docker:wait
@@ -44,7 +44,7 @@ tasks:
   recreate:
     desc: Force recreate
     cmds:
-      - docker compose up {{.CLI_ARGS}} -d --build --force-recreate
+      - docker compose up {{.CLI_ARGS}} -d --build --remove-orphans --force-recreate --pull always
 
   remove:
     desc: Removes stopped service containers

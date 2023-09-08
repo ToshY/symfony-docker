@@ -1,0 +1,36 @@
+version: '3'
+
+tasks:
+  default:
+    cmds:
+      - task --list
+
+  install:dev:
+    desc: Composer install dev
+    cmds:
+      - task app:shell -- composer install --no-cache --no-interaction --prefer-dist
+
+  install:prod:
+    desc: Composer install prod
+    cmds:
+      - task app:shell -- composer install --no-cache --no-interaction --prefer-dist --no-progress --prefer-dist --no-dev --optimize-autoloader
+
+  autoload:
+    desc: Composer dump autoload
+    cmds:
+      - task app:shell -- composer dump-autoload --no-cache --no-interaction
+
+  require:
+    desc: Composer require package
+    cmds:
+      - task app:shell -- composer require {{.CLI_ARGS}} --no-cache
+
+  remove:
+    desc: Composer remove package
+    cmds:
+      - task app:shell -- composer remove {{.CLI_ARGS}} --no-cache
+
+  update:
+    desc: Composer update package
+    cmds:
+      - task app:shell -- composer update {{.CLI_ARGS}} --no-cache
