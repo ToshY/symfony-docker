@@ -37,4 +37,4 @@ jobs:
         run: |
           CHANGED_FILES=$(echo "${{ steps.changed-files.outputs.all_changed_and_modified_files }}" | tr ' ' '\n')
           if ! echo "${CHANGED_FILES}" | grep -qE "^(\\.php-cs-fixer(\\.dist)?\\.php|composer\\.lock)$"; then EXTRA_ARGS=$(printf -- '--path-mode=intersection\n--\n%s' "${CHANGED_FILES}"); else EXTRA_ARGS=''; fi
-          vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php -v --dry-run --diff --using-cache=no ${EXTRA_ARGS}
+          PHP_CS_FIXER_IGNORE_ENV=1 vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php -v --dry-run --diff --using-cache=no ${EXTRA_ARGS}
