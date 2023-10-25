@@ -1,4 +1,4 @@
-FROM t0shy/phpfpm-buster:8.1 AS local
+FROM t0shy/phpfpm-bookworm:8.1 AS local
 
 ARG UID=${UID:-10000}
 ARG GID=${GID:-10001}
