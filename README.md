@@ -19,11 +19,11 @@ This repository acts as a template to set up basic Symfony webapp with docker co
 
 * [Docker Compose (v2.21.0+)](https://docs.docker.com/compose/install/)
 * [Task](https://taskfile.dev/installation/)
-* [Reverse proxy | Traefik](https://doc.traefik.io/traefik/)
+* [Reverse proxy | Traefik](https://doc.traefik.io/traefik/) (Optional)
     * It is assumed that the user has a working development setup for [Traefik](https://doc.traefik.io/traefik/).
 
-> Note: You can switch out Traefik for any other reverse proxy of your choice, but this would require additional
-> tweaking of the docker compose configuration.
+> Note: You can switch out Traefik for any other reverse proxy of your choice (or not use a reverse proxy at all), but
+> this would require additional tweaking of labels (or exposing ports) in the docker compose configuration.
 
 ## 🎬 Get Started
 
@@ -31,10 +31,15 @@ This repository acts as a template to set up basic Symfony webapp with docker co
 
 Add `webapp.local` to your hosts files, e.g. `/etc/hosts` (Unix).
 
-### Update dotenv (optional)
+### Initialise dotenv
 
-The supplied `.env` file contains example values for environment variables used to set up the application.
-You can tweak the values if needed.
+For first time setup, initialise the `.env.local` from the `.env`.
+
+```shell
+task init
+```
+
+You can now tweak the values in the `.env.local` if needed.
 
 ### Start application services
 
@@ -76,7 +81,7 @@ can do the following:
 
 ```shell
 # Substitute "dev.example.com" with desired project directory name
-docker run --rm -it -v $(pwd):/app composer:2 create-project symfony/skeleton:6.2.* dev.example.com
+docker run --rm -it -v $(pwd):/app composer:2 create-project symfony/skeleton:6.4.* dev.example.com
 docker run --rm -it -v $(pwd)/dev.example.com:/app composer:2 require webapp -n
 sudo chown -R $(id -u):$(id -g) $(pwd)/dev.example.com
  ```

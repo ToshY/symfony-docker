@@ -19,6 +19,11 @@ tasks:
     cmds:
       - task --list
 
+  init:
+    desc: Initialisation of dotenv
+    cmds:
+      - rsync -q --ignore-missing-args --ignore-existing $(pwd)/.env $(pwd)/.env.local
+
   up:
     desc: Initial setup application
     cmds:
