@@ -1,8 +1,10 @@
 <?php
 
+use TwigCsFixer\Rules\Whitespace\EmptyLinesRule;
+
 $ruleset = (new TwigCsFixer\Ruleset\Ruleset())
-    ->addStandard(new TwigCsFixer\Standard\Generic())
-    ->removeSniff(TwigCsFixer\Sniff\EmptyLinesSniff::class);
+    ->addStandard(new TwigCsFixer\Standard\Twig())
+    ->removeRule(EmptyLinesRule::class);
 
 return (new TwigCsFixer\Config\Config())
     ->setRuleset($ruleset)
