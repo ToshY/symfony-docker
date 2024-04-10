@@ -8,7 +8,6 @@
          beStrictAboutOutputDuringTests="true"
          failOnRisky="true"
          failOnWarning="true"
-         cacheDirectory=".phpunit.cache"
          beStrictAboutCoverageMetadata="true">
     <php>
         <ini name="display_errors" value="1"/>

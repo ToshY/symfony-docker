@@ -1,5 +1,3 @@
-version: '3.9'
-
 x-restart-always: &restart-always
   restart: always
 

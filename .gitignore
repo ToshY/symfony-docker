@@ -23,6 +23,9 @@
 /.php-cs-fixer.php
 /.php-cs-fixer.cache
 ###< friendsofphp/php-cs-fixer ###
+###> phpunit ###
+/.phpunit.cache
+###< phpunit ###
 !/**/.gitkeep
 ###> vincentlanglet/twig-cs-fixer ###
 /.twig-cs-fixer.cache
