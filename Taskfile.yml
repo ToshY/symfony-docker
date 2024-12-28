@@ -6,6 +6,7 @@ includes:
   db: ./.tasks/database
   docker: ./.tasks/docker
   npm: ./.tasks/npm
+  redis: ./.tasks/redis
 
 env:
   UID:

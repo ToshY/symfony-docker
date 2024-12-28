@@ -1,0 +1,28 @@
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: local
+      args:
+        UID: ${UID:-10000}
+        GID: ${GID:-10001}
+    user: "${UID:-10000}:${GID:-10001}"
+    environment:
+      PHP_OPCACHE_ENABLE: ${OPCACHE_ENABLE:-"0"}
+      OPCACHE_ENABLE_CLI: ${OPCACHE_ENABLE_CLI:-"0"}
+      OPCACHE_ENABLE_FREQ: ${OPCACHE_ENABLE_FREQ:-"0"}
+      OPCACHE_VALIDATE_TIMESTAMPS: ${OPCACHE_VALIDATE_TIMESTAMPS:-"1"}
+      OPCACHE_MAX_ACCELERATED_FILES: ${OPCACHE_MAX_ACCELERATED_FILES:-"10000"}
+      OPCACHE_MEMORY_CONSUMPTION: ${OPCACHE_MEMORY_CONSUMPTION:-"256"}
+      OPCACHE_MAX_WASTED_PERCENTAGE: ${OPCACHE_MAX_WASTED_PERCENTAGE:-"5"}
+      OPCACHE_INTERNED_STRINGS_BUFFER: ${OPCACHE_INTERNED_STRINGS_BUFFER:-"12"}
+      OPCACHE_PRELOAD: ${OPCACHE_PRELOAD:-"/app/var/cache/${APP_ENV}/App_KernelProdContainer.preload.php"}
+    volumes:
+      - .:/app
+    networks:
+      - webapp
+
+networks:
+  webapp:
+    driver: bridge

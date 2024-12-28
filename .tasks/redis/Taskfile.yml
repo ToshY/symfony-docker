@@ -1,0 +1,120 @@
+version: '3'
+
+tasks:
+  default:
+    cmds:
+      - task --list
+
+  shell:
+    desc: Login
+    aliases:
+      - s
+    cmds:
+      - docker compose exec redis {{.CLI_ARGS | default "/bin/bash"}}
+
+  cli:
+    desc: Login with CLI
+    aliases:
+      - cli
+    vars:
+      DATABASE: '{{.d | default "0"}}'
+    cmds:
+      - docker compose exec redis redis-cli -n {{.DATABASE}}
+
+  get:key:
+    desc: Get value for key
+    aliases:
+      - g:k
+    vars:
+      KEY: '{{.k}}'
+      DATABASE: '{{.d | default "0"}}'
+    cmds:
+      - docker compose exec redis redis-cli -n {{.DATABASE}} GET {{.KEY}}
+
+  get:keys:
+    desc: Show all keys
+    aliases:
+      - g:ks
+    cmds:
+      - docker compose exec redis redis-cli KEYS "*"
+
+  get:keys:db:
+    desc: Show keys for specific database
+    aliases:
+      - g:ks:db
+    vars:
+      DATABASE: '{{.d | default "0"}}'
+    cmds:
+      - docker compose exec redis redis-cli -n {{.DATABASE}} KEYS "*"
+
+  get:keys:db:pattern:
+    desc: Show keys by search
+    aliases:
+      - g:ks:db:p
+    summary: |
+      Supported glob-style patterns:
+
+      - h?llo matches hello, hallo and hxllo
+      - h*llo matches hllo and heeeello
+      - h[ae]llo matches hello and hallo, but not hillo
+      - h[^e]llo matches hallo, hbllo, ... but not hello
+      - h[a-b]llo matches hallo and hbllo
+    vars:
+      DATABASE: '{{.d | default "0"}}'
+      PATTERN: '{{.p | default "*"}}'
+    cmds:
+      - docker compose exec redis redis-cli -n {{.DATABASE}} KEYS "{{.PATTERN}}"
+
+  delete:keys:db:pattern:
+    desc: Delete by specified pattern; task delete:pattern db=4 p=*aniList_image*
+    aliases:
+      - d:ks:db:p
+    vars:
+      DATABASE: '{{.d | default "0"}}'
+      PATTERN: '{{.p}}'
+    cmds:
+      - docker compose exec redis redis-cli -n {{.DATABASE}} EVAL "for _,k in ipairs(redis.call('keys','{{.PATTERN}}')) do redis.call('del',k) end" 0
+
+  flush:
+    desc: Flush everything, for every database
+    aliases:
+      - f
+    cmds:
+      - docker compose exec redis redis-cli FLUSHALL ASYNC
+
+  flush:db:
+    desc: Flush specified database
+    aliases:
+      - f:db
+    vars:
+      DATABASE: '{{.d | default "0"}}'
+    cmds:
+      - docker compose exec redis redis-cli -n {{.DATABASE}} FLUSHDB ASYNC
+
+  benchmark:
+    desc: Benchmark redis; with password use `-a password` for CLI args.
+    aliases:
+      - b
+    vars:
+      TESTS: '{{.n | default "set,get"}}'
+      RANDOM_KEYS: '{{.r | default "100000"}}'
+      REQUEST_AMOUNT: '{{.n | default "1000000"}}'
+      KEY_SIZE: '{{.d | default "50"}}'
+    cmds:
+      - docker compose exec redis redis-benchmark -t {{.TESTS}} -r {{.RANDOM_KEYS}} -n {{.REQUEST_AMOUNT}} -d {{.KEY_SIZE}} {{.CLI_ARGS}}
+
+  benchmark:latency:
+    desc: Check latency
+    aliases:
+      - b:l
+    cmds:
+      - docker compose exec redis redis-cli --latency
+
+  benchmark:latency:system:
+    desc: Check (system) intrinsic latency
+    aliases:
+      - b:l:s
+    vars:
+      TIME: '{{.t | default "30"}}'
+    cmds:
+      - docker compose exec redis redis-cli --intrinsic-latency {{.TIME}}

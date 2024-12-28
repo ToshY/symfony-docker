@@ -1,4 +1,4 @@
-FROM t0shy/phpfpm-bookworm:8.3 AS local
+FROM ghcr.io/toshy/php:8.3-fpm-bookworm AS local
 
 ARG UID=${UID:-10000}
 ARG GID=${GID:-10001}
