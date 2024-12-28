@@ -22,7 +22,7 @@ This repository acts as a template to set up basic Symfony webapp with docker co
 * [Reverse proxy | Traefik](https://doc.traefik.io/traefik/) (Optional)
     * It is assumed that the user has a working development setup for [Traefik](https://doc.traefik.io/traefik/).
 
-> ![TIP]
+> [!TIP]
 > You can switch out Traefik for any other reverse proxy of your choice (or not use a reverse proxy at all), although
 > this requires additional tweaking of labels (or exposing ports) in the docker compose configuration.
 
@@ -53,7 +53,7 @@ task up
 If the reverse proxy is configured correctly, you should be able to visit `webapp.local` in your browser and be
 greeted by Symfony's default landing page.
 
-> ![NOTE]
+> [!NOTE]
 > You can disregard the SSL certificate warnings for development usages.
 
 ## 📚 Additional services
@@ -171,7 +171,7 @@ services:
 
 You can now access Redis at [localhost:6379](localhost:6379).
 
-> ![TIP]
+> [!TIP]
 > Use [Redis Insight (v2)](https://github.com/RedisInsight/RedisInsight) to view the data in your Redis container.
 
 ### Messenger & RabbitMQ
@@ -277,7 +277,7 @@ MESSENGER_TRANSPORT_DSN="amqp://${MESSENGER_TRANSPORT_USER}:${MESSENGER_TRANSPOR
 
 You can now access the RabbitMQ panel at [rabbitmq.webapp.local](rabbitmq.webapp.local).
 
-> ![TIP]
+> [!TIP]
 > You can scale the `messenger` service to use multiple containers to handle messages even faster!
 >
 > Scale `messenger` service with `5` containers:
