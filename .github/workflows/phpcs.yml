@@ -20,6 +20,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: ${{ github.event_name == 'pull_request' && 2 || 0 }}
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -29,7 +31,19 @@ jobs:
       - name: Install Composer dependencies
         uses: ramsey/composer-install@v3
 
+      - name: Get changed files
+        id: changed-files
+        run: |
+          if ${{ github.event_name == 'pull_request' }}; then
+              echo "all_changed_and_modified_files=$(git diff --name-only --diff-filter=ACMRTUXB -r HEAD^1 HEAD | xargs)" >> $GITHUB_OUTPUT
+          else
+              echo "all_changed_and_modified_files=$(git diff --name-only --diff-filter=ACMRTUXB ${{ github.event.before }} ${{ github.event.after }} | xargs)" >> $GITHUB_OUTPUT
+          fi
+
       - name: PHP CS Fixer
-        run: vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php -v --dry-run --diff --using-cache=no
+        run: |
+          CHANGED_FILES=$(echo "${{ steps.changed-files.outputs.all_changed_and_modified_files }}" | tr ' ' '\n')
+          if ! echo "${CHANGED_FILES}" | grep -qE "^(\\.php-cs-fixer(\\.dist)?\\.php|composer\\.lock)$"; then EXTRA_ARGS=$(printf -- '--path-mode=intersection\n--\n%s' "${CHANGED_FILES}"); else EXTRA_ARGS=''; fi
+          vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php -v --dry-run --diff --using-cache=no ${EXTRA_ARGS}
         env:
           PHP_CS_FIXER_IGNORE_ENV: ${{ matrix.php-versions == '8.4' && '1' || '' }}
