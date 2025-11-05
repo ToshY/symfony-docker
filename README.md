@@ -17,7 +17,7 @@ This repository acts as a template to set up basic Symfony webapp with docker co
 
 ### 🧰 Prerequisites
 
-* [Docker Compose (v2.21.0+)](https://docs.docker.com/compose/install/)
+* [Docker Compose (v2.40.3+)](https://docs.docker.com/compose/install/)
 * [Task](https://taskfile.dev/installation/)
 * [Reverse proxy | Traefik](https://doc.traefik.io/traefik/) (Optional)
     * It is assumed that the user has a working development setup for [Traefik](https://doc.traefik.io/traefik/).
